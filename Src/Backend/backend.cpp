@@ -1,101 +1,181 @@
 #include "backend.h"
 #include "../Frontend/frontend.h"
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
-static void glfw_error_callback(int error, const char* description)
-{
-	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
-}
 
 bool Backend::RenderLoop()
 {
-	glfwSetErrorCallback(glfw_error_callback);
-	if (!glfwInit())
-		return 1;
-
-	const char* glsl_version = "#version 130";
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-	//glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-
-	GLFWwindow* window = glfwCreateWindow(1280, 800, "Tranquility Dev Pannel", NULL, NULL);
-	this->ourHWND = glfwGetWin32Window(window);
-	
-	if (window == NULL)
-		return 1;
-
-	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1); // Enable vsync
-	// Initialize OpenGL loader
-	#pragma region errors
-	#if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
-		bool err = gl3wInit() != 0;
-	#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)
-		bool err = glewInit() != GLEW_OK;
-	#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)
-		bool err = gladLoadGL() == 0;
-	#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD2)
-		bool err = gladLoadGL(glfwGetProcAddress) == 0; // glad2 recommend using the windowing library loader instead of the (optionally) bundled one.
-	#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLBINDING2)
-		bool err = false;
-		glbinding::Binding::initialize();
-	#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLBINDING3)
-		bool err = false;
-		glbinding::initialize([](const char* name) { return (glbinding::ProcAddress)glfwGetProcAddress(name); });
-	#else
-		bool err = false; // If you use IMGUI_IMPL_OPENGL_LOADER_CUSTOM, your loader is likely to requires some form of initialization.
-	#endif
-	#pragma endregion
-
-	if (err)
+	WNDCLASSEX wc =
 	{
-		fprintf(stderr, "Failed to initialize OpenGL loader!\n");
-		return 1;
+		sizeof(WNDCLASSEX),		//cbSize
+		CS_CLASSDC,				//style
+		WndProc,				//lpfnWndProc
+		0L,						//cbClsExtra
+		0L,						//cbWndExtra
+		GetModuleHandle(NULL),	//hInstance
+		NULL,					//hIcon
+		NULL,					//hCursor
+		NULL,					//hbrBackground
+		NULL,					//lpszMenuName
+		_T("ImGui Example"),	//lpszClassName
+		NULL					//hIconSm
+	};
+	/*
+	Register our WNDClass to our program so that Windows knows what class it is so that they can maintain information about it for further use.
+	*/
+	::RegisterClassEx(&wc);
+	/*
+		Create our window with our WndClass fields.
+		_T is used so if we decide to change the string type from unicode to multibyte & vice-versa, we dont need to change a single line of code
+		we pass our class instance so wndproc can be used even when its a static function
+	*/
+	HWND hwnd = ::CreateWindow(wc.lpszClassName, _T("Dear ImGui DirectX9 Example"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, this);
+
+	// Initialize Direct3D
+	if (!CreateDeviceD3D(hwnd))
+	{
+		CleanupDeviceD3D();
+		::UnregisterClass(wc.lpszClassName, wc.hInstance);
+		return EXIT_FAILURE;
+
 	}
+
+	// Show the window
+	::ShowWindow(hwnd, SW_SHOWDEFAULT);
+	::UpdateWindow(hwnd);
+
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGui::StyleColorsClassic();
 
 	// Setup Platform/Renderer backends
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init(glsl_version);
+	ImGui_ImplWin32_Init(hwnd);
+	ImGui_ImplDX11_Init(pd3dDevice, pd3dDeviceContext);
 
+	MSG msg;
+	ZeroMemory(&msg, sizeof(msg));
+	//sets our background colour
 	ImVec4 clearColour = ImVec4(0.45f, 0.55f, 0.60f, 255);
 
-	while (!glfwWindowShouldClose(window))
+	while (msg.message != WM_QUIT)
 	{
 
-		glfwPollEvents();
-
+		if (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
+		{
+			::TranslateMessage(&msg);
+			::DispatchMessage(&msg);
+			continue;
+		}
 		// Start the Dear ImGui frame
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
-
 		Frontend::DrawInterface();
-
 		ImGui::Render();
+		pd3dDeviceContext->OMSetRenderTargets(1, &mainRenderTargetView, NULL);
+		pd3dDeviceContext->ClearRenderTargetView(mainRenderTargetView, (float*)&clearColour);
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-		int display_w, display_h;
-		glfwGetFramebufferSize(window, &display_w, &display_h);
-		glViewport(0, 0, display_w, display_h);
-		glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
-		glClear(GL_COLOR_BUFFER_BIT);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		glfwSwapBuffers(window);
+		pSwapChain->Present(1, 0); // Present with vsync
+		//g_pSwapChain->Present(0, 0); // Present without vsync
 	}
-	// Cleanup
 
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
+	// Cleanup
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 
-	glfwDestroyWindow(window);
-	glfwTerminate();
+	CleanupDeviceD3D();
+	::DestroyWindow(hwnd);
+	::UnregisterClass(wc.lpszClassName, wc.hInstance);
 	return false;
 }
+bool Backend::CreateDeviceD3D(HWND hWnd)
+{
+	// Setup swap chain
+	DXGI_SWAP_CHAIN_DESC sd;
+	ZeroMemory(&sd, sizeof(sd));
+	sd.BufferCount = 2;
+	sd.BufferDesc.Width = 0;
+	sd.BufferDesc.Height = 0;
+	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sd.BufferDesc.RefreshRate.Numerator = 60;
+	sd.BufferDesc.RefreshRate.Denominator = 1;
+	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.OutputWindow = hWnd;
+	sd.SampleDesc.Count = 1;
+	sd.SampleDesc.Quality = 0;
+	sd.Windowed = TRUE;
+	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
+	UINT createDeviceFlags = 0;
+	//createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+	D3D_FEATURE_LEVEL featureLevel;
+	const D3D_FEATURE_LEVEL featureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
+	if (D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &pSwapChain, &pd3dDevice, &featureLevel, &pd3dDeviceContext) != S_OK)
+		return false;
+
+	CreateRenderTarget();
+	return true;
+}
+
+
+void Backend::CleanupDeviceD3D()
+{
+	CleanupRenderTarget();
+	if (pSwapChain) { pSwapChain->Release(); pSwapChain = NULL; }
+	if (pd3dDeviceContext) { pd3dDeviceContext->Release(); pd3dDeviceContext = NULL; }
+	if (pd3dDevice) { pd3dDevice->Release(); pd3dDevice = NULL; }
+}
+
+void Backend::CreateRenderTarget()
+{
+	ID3D11Texture2D* pBackBuffer;
+	pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+	pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &mainRenderTargetView);
+	pBackBuffer->Release();
+}
+
+void Backend::CleanupRenderTarget()
+{
+	if (mainRenderTargetView) { mainRenderTargetView->Release(); mainRenderTargetView = NULL; }
+}
+
+// Forward declare message handler from imgui_impl_win32.cpp
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+// Win32 message handler
+LRESULT WINAPI Backend::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	static Backend* pThis = nullptr;
+
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+		return true;
+
+	switch (msg)
+	{
+	case WM_NCCREATE:
+		pThis = static_cast<Backend*>(reinterpret_cast<CREATESTRUCT*>(lParam)->lpCreateParams);
+		break;
+	case WM_SIZE:
+		if (!pThis)
+			return 0;
+		if (pThis->pd3dDevice != NULL && wParam != SIZE_MINIMIZED)
+		{
+			pThis->CleanupRenderTarget();
+			pThis->pSwapChain->ResizeBuffers(0, (UINT)LOWORD(lParam), (UINT)HIWORD(lParam), DXGI_FORMAT_UNKNOWN, 0);
+			pThis->CreateRenderTarget();
+		}
+		return 0;
+	case WM_SYSCOMMAND:
+		if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
+			return 0;
+		break;
+	case WM_DESTROY:
+		::PostQuitMessage(0);
+		return 0;
+	}
+	return ::DefWindowProc(hWnd, msg, wParam, lParam);
+}
 
 std::size_t Callback(
 		const char* in,
@@ -164,11 +244,7 @@ std::pair<CURLcode,Json::Value> Backend::CreateUser(
 		Json::Reader jsonReader;
 
 		if (jsonReader.parse(*httpData, jsonData))
-		{
-			std::cout << "Successfully parsed JSON data" << std::endl;
 			return std::make_pair(res, jsonData);
-
-		}
 
 	}
 	return {};
@@ -188,7 +264,7 @@ std::pair<CURLcode, Json::Value> Backend::GetMembers()
 		curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:322/api/member");
 		std::unique_ptr<std::string> httpData(new std::string());
 
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, Callback);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, httpData.get());
 
 
@@ -204,14 +280,42 @@ std::pair<CURLcode, Json::Value> Backend::GetMembers()
 		Json::Reader jsonReader;
 
 		if (jsonReader.parse(*httpData, jsonData))
-		{
 			return std::make_pair(res, jsonData);
-		}
+		
 	}
 	return{};
 }
 
+bool Backend::DeleteMemberWithID(std::string id)
+{
+	CURL* curl;
+	CURLcode res;
 
+	/* get a curl handle */
+	curl = curl_easy_init();
+	if (curl)
+	{
+		std::string idrfk = std::string("http://localhost:322/api/member/") + id;
+		curl_easy_setopt(curl, CURLOPT_URL, idrfk.c_str());
+
+		curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+
+		/* Perform the request, res will get the return code */
+		res = curl_easy_perform(curl);
+		/* Check for errors */
+		if (res != CURLE_OK)
+		{
+			fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+			return false;
+		}
+
+		/* always cleanup */
+		curl_easy_cleanup(curl);
+		return true;
+	}
+	return false;
+
+}
 
 
 

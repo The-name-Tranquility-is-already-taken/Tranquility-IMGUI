@@ -4,21 +4,24 @@ void UserTab()
 {
 	static auto createUserTextSize = ImGui::CalcTextSize("Create User \n ");
 	static auto listUsersTextSize = ImGui::CalcTextSize("list Users \n ");
+	static auto removeUserTextSize = ImGui::CalcTextSize("Remove User \n ");
 
 	static std::vector<Json::Value> data;
 	static std::string previousUserResponse;
-
+	static bool createUserPopup = false;
+	static bool removeUserPopup = false;
 	ImGui::Columns(2, 0, false);
-	static bool drawPopup = false;
+
 	if (ImGui::Button("Create User", createUserTextSize))
 	{
-		drawPopup = true;
+		createUserPopup = !createUserPopup;
 	}
-	if (drawPopup)
+	
+	if (createUserPopup)
 	{
 		ImGui::SetNextWindowSize({ 380,220 });
 
-		ImGui::Begin("##CreateUserPopup", &drawPopup, ImGuiWindowFlags_NoResize);
+		ImGui::Begin("##CreateUserPopup", &createUserPopup, ImGuiWindowFlags_NoResize);
 		{
 
 			//ImGui::SetWindowFocus();
@@ -51,7 +54,7 @@ void UserTab()
 				{
 					//display errror message containing what is required
 				}
-				drawPopup = false;
+				createUserPopup = false;
 
 				//set our strings back to null
 				//////////////////////////////////////
@@ -67,9 +70,41 @@ void UserTab()
 		ImGui::End();
 	}
 
+	if (ImGui::Button("Remove User", removeUserTextSize))
+	{
+		removeUserPopup = !removeUserPopup;
+	}
+
+	if (removeUserPopup)
+	{
+		ImGui::SetNextWindowSize({ 380,220 });
+
+		ImGui::Begin("##RemoveUserPopup", &removeUserPopup, ImGuiWindowFlags_NoResize);
+		{
+			static char userId[128];
+			ImGui::InputText("ID", userId, IM_ARRAYSIZE(userId));
+			if (ImGui::Button("Submit", { 48,30 }))
+			{
+				if (gBackend->DeleteMemberWithID(userId))
+				{
+					MessageBox(NULL, _T("Succsess"), _T("Removal was succsessfull"), MB_OK);
+				}
+				else
+				{
+					MessageBox(NULL, _T("Error"), _T("Removal Failed"), MB_OK);
+				}
+				removeUserPopup = !removeUserPopup;
+			}
+
+		}
+		ImGui::End();
+	}
+
+
+
 	if (!previousUserResponse.empty())
 	{
-		ImGui::Text("Response :");
+		ImGui::Text("Response :\n");
 		ImGui::TextWrapped(previousUserResponse.c_str());
 	}
 
@@ -77,14 +112,18 @@ void UserTab()
 
 	if (ImGui::Button("List Users", listUsersTextSize))
 	{
-		/*clears so we dont have a long list of duplicates*/
+		/*
+			clears so we dont have a long list of duplicates
+		*/
 		data.clear();
 
 		auto users = gBackend->GetMembers();
 		if (users.first == CURLE_OK)
 		{
 			auto usersObj = users.second;
-			/*UINT32 since we dont know how many users will exist, and we dont want the index going over the max range*/
+			/*
+				UINT32 since we dont know how many users will exist, and we dont want the index going over the max range
+			*/
 			for (UINT32 i = 0; i < usersObj.size(); ++i)
 			{
 				data.push_back(usersObj[i]);
@@ -98,7 +137,7 @@ void UserTab()
 	if (data.size() > 0)
 	{
 		/*
-		Utilizes lambdas to dynamically loop though and display all existing users via tags 
+			Utilizes lambdas to dynamically loop though and display all existing users via tags 
 		*/
 		if (ImGui::ListBox("##UserList", &currentIndx, [](void* data, int idx, const char** out_text)
 			{
@@ -108,7 +147,9 @@ void UserTab()
 			}, &data, data.size(), 10));
 		if (currentIndx != -1)
 		{
-			/*Stored as string instead of cstring because it dies otherwise, i'll have more info later*/
+			/*
+				Stored as string instead of cstring because it dies otherwise, i'll have more info later
+			*/
 			std::string selectedUsrObject = data[currentIndx].toStyledString();
 
 			auto textSize = ImGui::CalcTextSize(selectedUsrObject.c_str());
@@ -154,6 +195,7 @@ void Frontend::DrawInterface()
 		//ImGui::SetCursorPosX(p.x + ImGui::GetWindowSize().x - 30);
 		static bool burgerMenuPressed;
 		ImGui::SetCursorPosX(ImGui::GetWindowSize().x - 40);
+		
 		if (ImGui::InvisibleButton("##BurgerMenu", ImVec2(50, 20)))
 			burgerMenuPressed = !burgerMenuPressed;
 		

@@ -109,7 +109,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>D:\A STUFF\MY PROJECTS\Discord-Alt Resources and stuff\Main Dev\Tranquility-IMGUI\Src\IMGUI-Dependencies\libs\glfw\lib-vc2010-64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;$(SolutionDir)Src\Curl-7.76.0\x64\Debug\libcurld.lib;crypt32.lib;Wldap32.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;$(SolutionDir)Src\Curl-7.76.0\x64\Debug\libcurld.lib;crypt32.lib;Wldap32.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -117,11 +117,10 @@
     <ClCompile Include="Frontend\frontend.cpp" />
     <ClCompile Include="IMGUI-Dependencies\imgui.cpp" />
     <ClCompile Include="IMGUI-Dependencies\imgui_draw.cpp" />
-    <ClCompile Include="IMGUI-Dependencies\imgui_impl_glfw.cpp" />
-    <ClCompile Include="IMGUI-Dependencies\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="IMGUI-Dependencies\imgui_impl_dx11.cpp" />
+    <ClCompile Include="IMGUI-Dependencies\imgui_impl_win32.cpp" />
     <ClCompile Include="IMGUI-Dependencies\imgui_tables.cpp" />
     <ClCompile Include="IMGUI-Dependencies\imgui_widgets.cpp" />
-    <ClCompile Include="IMGUI-Dependencies\libs\gl3w\GL\gl3w.c" />
     <ClCompile Include="JsonCPP\jsoncpp.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -140,14 +139,12 @@
     <ClInclude Include="Frontend\frontend.h" />
     <ClInclude Include="IMGUI-Dependencies\imconfig.h" />
     <ClInclude Include="IMGUI-Dependencies\imgui.h" />
-    <ClInclude Include="IMGUI-Dependencies\imgui_impl_glfw.h" />
-    <ClInclude Include="IMGUI-Dependencies\imgui_impl_opengl3.h" />
+    <ClInclude Include="IMGUI-Dependencies\imgui_impl_dx11.h" />
+    <ClInclude Include="IMGUI-Dependencies\imgui_impl_win32.h" />
     <ClInclude Include="IMGUI-Dependencies\imgui_internal.h" />
     <ClInclude Include="IMGUI-Dependencies\imstb_rectpack.h" />
     <ClInclude Include="IMGUI-Dependencies\imstb_textedit.h" />
     <ClInclude Include="IMGUI-Dependencies\imstb_truetype.h" />
-    <ClInclude Include="IMGUI-Dependencies\libs\gl3w\GL\gl3w.h" />
-    <ClInclude Include="IMGUI-Dependencies\libs\gl3w\GL\glcorearb.h" />
     <ClInclude Include="JsonCPP\json\json-forwards.h" />
     <ClInclude Include="JsonCPP\json\json.h" />
   </ItemGroup>

@@ -41,9 +41,6 @@
     <Filter Include="JSON\Headers">
       <UniqueIdentifier>{b4228a59-b3f9-4371-a372-85aecb521a72}</UniqueIdentifier>
     </Filter>
-    <Filter Include="gl3w">
-      <UniqueIdentifier>{bbb91dc6-0bbd-4ddc-9da6-9c9d774b5925}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LibCurl">
       <UniqueIdentifier>{9cd98822-6482-442b-8e0f-d9452712583e}</UniqueIdentifier>
     </Filter>
@@ -67,20 +64,17 @@
     <ClCompile Include="IMGUI-Dependencies\imgui_draw.cpp">
       <Filter>ImGui\Source</Filter>
     </ClCompile>
-    <ClCompile Include="IMGUI-Dependencies\imgui_impl_glfw.cpp">
-      <Filter>ImGui\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="IMGUI-Dependencies\imgui_impl_opengl3.cpp">
-      <Filter>ImGui\Source</Filter>
-    </ClCompile>
     <ClCompile Include="IMGUI-Dependencies\imgui_tables.cpp">
       <Filter>ImGui\Source</Filter>
     </ClCompile>
     <ClCompile Include="IMGUI-Dependencies\imgui_widgets.cpp">
       <Filter>ImGui\Source</Filter>
     </ClCompile>
-    <ClCompile Include="IMGUI-Dependencies\libs\gl3w\GL\gl3w.c">
-      <Filter>gl3w</Filter>
+    <ClCompile Include="IMGUI-Dependencies\imgui_impl_dx11.cpp">
+      <Filter>ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IMGUI-Dependencies\imgui_impl_win32.cpp">
+      <Filter>ImGui\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,12 +96,6 @@
     <ClInclude Include="IMGUI-Dependencies\imgui.h">
       <Filter>ImGui\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="IMGUI-Dependencies\imgui_impl_glfw.h">
-      <Filter>ImGui\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="IMGUI-Dependencies\imgui_impl_opengl3.h">
-      <Filter>ImGui\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="IMGUI-Dependencies\imgui_internal.h">
       <Filter>ImGui\Headers</Filter>
     </ClInclude>
@@ -119,12 +107,6 @@
     </ClInclude>
     <ClInclude Include="IMGUI-Dependencies\imstb_truetype.h">
       <Filter>ImGui\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="IMGUI-Dependencies\libs\gl3w\GL\gl3w.h">
-      <Filter>gl3w</Filter>
-    </ClInclude>
-    <ClInclude Include="IMGUI-Dependencies\libs\gl3w\GL\glcorearb.h">
-      <Filter>gl3w</Filter>
     </ClInclude>
     <ClInclude Include="Curl-7.76.0\curl\curl.h">
       <Filter>LibCurl</Filter>
@@ -155,6 +137,12 @@
     </ClInclude>
     <ClInclude Include="Curl-7.76.0\curl\urlapi.h">
       <Filter>LibCurl</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\imgui_impl_dx11.h">
+      <Filter>ImGui\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\imgui_impl_win32.h">
+      <Filter>ImGui\Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
