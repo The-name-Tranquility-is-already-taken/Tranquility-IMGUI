@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{92936eea-3bbb-4844-a62b-673fa04619d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\Headers">
+      <UniqueIdentifier>{1fe7a458-c689-44a7-99e0-0335c8a493ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\Source">
+      <UniqueIdentifier>{c920d2a7-57c4-44dc-abde-ae15b6d24784}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Backend">
+      <UniqueIdentifier>{8494e140-a4fc-42b5-9c70-8f3e6b51d5ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frontend">
+      <UniqueIdentifier>{d818d61b-21dd-4a6e-8b95-a39847320b12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frontend\Headers">
+      <UniqueIdentifier>{6345d6f8-093a-4a7a-9d79-daadce8ddd47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Backend\Headers">
+      <UniqueIdentifier>{df1b1dbc-8b0b-4646-ba2f-eee76a83528a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frontend\Source">
+      <UniqueIdentifier>{73f8bab0-33bd-4dd4-aa25-949c1393a317}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Backend\Source">
+      <UniqueIdentifier>{33f3413e-fe54-4b49-8619-c4477d10d2c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JSON">
+      <UniqueIdentifier>{3d317f8d-ba2f-408e-a0e3-8fbd1db32e18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JSON\Source">
+      <UniqueIdentifier>{86c5e307-8475-442c-b9d4-3125df374ea3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JSON\Headers">
+      <UniqueIdentifier>{b4228a59-b3f9-4371-a372-85aecb521a72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gl3w">
+      <UniqueIdentifier>{bbb91dc6-0bbd-4ddc-9da6-9c9d774b5925}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCurl">
+      <UniqueIdentifier>{9cd98822-6482-442b-8e0f-d9452712583e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Frontend\frontend.cpp">
+      <Filter>Frontend\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Backend\backend.cpp">
+      <Filter>Backend\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonCPP\jsoncpp.cpp">
+      <Filter>JSON\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IMGUI-Dependencies\imgui.cpp">
+      <Filter>ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IMGUI-Dependencies\imgui_draw.cpp">
+      <Filter>ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IMGUI-Dependencies\imgui_impl_glfw.cpp">
+      <Filter>ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IMGUI-Dependencies\imgui_impl_opengl3.cpp">
+      <Filter>ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IMGUI-Dependencies\imgui_tables.cpp">
+      <Filter>ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IMGUI-Dependencies\imgui_widgets.cpp">
+      <Filter>ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IMGUI-Dependencies\libs\gl3w\GL\gl3w.c">
+      <Filter>gl3w</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Frontend\frontend.h">
+      <Filter>Frontend\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Backend\backend.h">
+      <Filter>Backend\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonCPP\json\json.h">
+      <Filter>JSON\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonCPP\json\json-forwards.h">
+      <Filter>JSON\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\imconfig.h">
+      <Filter>ImGui\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\imgui.h">
+      <Filter>ImGui\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\imgui_impl_glfw.h">
+      <Filter>ImGui\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\imgui_impl_opengl3.h">
+      <Filter>ImGui\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\imgui_internal.h">
+      <Filter>ImGui\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\imstb_rectpack.h">
+      <Filter>ImGui\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\imstb_textedit.h">
+      <Filter>ImGui\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\imstb_truetype.h">
+      <Filter>ImGui\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\libs\gl3w\GL\gl3w.h">
+      <Filter>gl3w</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI-Dependencies\libs\gl3w\GL\glcorearb.h">
+      <Filter>gl3w</Filter>
+    </ClInclude>
+    <ClInclude Include="Curl-7.76.0\curl\curl.h">
+      <Filter>LibCurl</Filter>
+    </ClInclude>
+    <ClInclude Include="Curl-7.76.0\curl\curlver.h">
+      <Filter>LibCurl</Filter>
+    </ClInclude>
+    <ClInclude Include="Curl-7.76.0\curl\easy.h">
+      <Filter>LibCurl</Filter>
+    </ClInclude>
+    <ClInclude Include="Curl-7.76.0\curl\mprintf.h">
+      <Filter>LibCurl</Filter>
+    </ClInclude>
+    <ClInclude Include="Curl-7.76.0\curl\multi.h">
+      <Filter>LibCurl</Filter>
+    </ClInclude>
+    <ClInclude Include="Curl-7.76.0\curl\options.h">
+      <Filter>LibCurl</Filter>
+    </ClInclude>
+    <ClInclude Include="Curl-7.76.0\curl\stdcheaders.h">
+      <Filter>LibCurl</Filter>
+    </ClInclude>
+    <ClInclude Include="Curl-7.76.0\curl\system.h">
+      <Filter>LibCurl</Filter>
+    </ClInclude>
+    <ClInclude Include="Curl-7.76.0\curl\typecheck-gcc.h">
+      <Filter>LibCurl</Filter>
+    </ClInclude>
+    <ClInclude Include="Curl-7.76.0\curl\urlapi.h">
+      <Filter>LibCurl</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
