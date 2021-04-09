@@ -145,7 +145,7 @@ void UserTab()
 				*out_text = vector.at(idx)["tag"].asCString();
 				return true;
 			}, &data, data.size(), 10));
-		if (currentIndx != -1)
+		if (currentIndx != -1 && data.size() >= currentIndx+1)
 		{
 			/*
 				Stored as string instead of cstring because it dies otherwise, i'll have more info later
