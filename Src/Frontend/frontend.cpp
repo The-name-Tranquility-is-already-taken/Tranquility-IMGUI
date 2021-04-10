@@ -10,6 +10,7 @@ void UserTab()
 	static std::string previousUserResponse;
 	static bool createUserPopup = false;
 	static bool removeUserPopup = false;
+
 	ImGui::Columns(2, 0, false);
 
 	if (ImGui::Button("Create User", createUserTextSize))
