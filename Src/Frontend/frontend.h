@@ -5,4 +5,6 @@ class Frontend
 	//Backend* backendObj;
 public:
 	static void DrawInterface();
+	void DrawProfileWindow();
+
 };

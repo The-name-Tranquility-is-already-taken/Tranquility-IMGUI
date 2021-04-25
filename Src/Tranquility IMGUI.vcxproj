@@ -141,6 +141,7 @@
     <ClInclude Include="Curl-7.76.0\curl\typecheck-gcc.h" />
     <ClInclude Include="Curl-7.76.0\curl\urlapi.h" />
     <ClInclude Include="Frontend\frontend.h" />
+    <ClInclude Include="globals.h" />
     <ClInclude Include="IMGUI-Dependencies\imconfig.h" />
     <ClInclude Include="IMGUI-Dependencies\imgui.h" />
     <ClInclude Include="IMGUI-Dependencies\imgui_impl_dx11.h" />

@@ -1,5 +1,7 @@
 #include "frontend.h"
 #include <functional>
+#include "../globals.h"
+
 void UserTab()
 {
 	static auto createUserTextSize = ImGui::CalcTextSize("Create User \n ");
@@ -32,20 +34,15 @@ void UserTab()
 			static char email[128];
 			ImGui::InputText("Email", email, IM_ARRAYSIZE(email));
 
-			static char id[128];
-			ImGui::InputText("Id", id, IM_ARRAYSIZE(id));
-
 			static char phoneNumber[128];
 			ImGui::InputText("Phone Number", phoneNumber, IM_ARRAYSIZE(phoneNumber));
 
-			static char passwordHash[UINT16_MAX];
-			ImGui::InputText("Password Hash", passwordHash, IM_ARRAYSIZE(passwordHash));
+			static char password[UINT16_MAX];
+			ImGui::InputText("Password", password, IM_ARRAYSIZE(password));
 
-			static char token[256];
-			ImGui::InputText("Token", token, IM_ARRAYSIZE(token));
 			if (ImGui::Button("Submit", { 48,30 }))
 			{
-				auto userResponse = gBackend->CreateUser(tag, email, id, phoneNumber, passwordHash, token);
+				auto userResponse = gBackend->CreateUser(tag, email, phoneNumber, password);
 
 				if (userResponse.first == CURLE_OK)
 				{
@@ -61,10 +58,8 @@ void UserTab()
 				//////////////////////////////////////
 				RtlZeroMemory(tag, sizeof(tag));
 				RtlZeroMemory(email, sizeof(email));
-				RtlZeroMemory(id, sizeof(id));
 				RtlZeroMemory(phoneNumber, sizeof(phoneNumber));
-				RtlZeroMemory(passwordHash, sizeof(passwordHash));
-				RtlZeroMemory(token, sizeof(token));
+				RtlZeroMemory(password, sizeof(password));
 				//////////////////////////////////////
 			}
 		}
@@ -168,8 +163,6 @@ void UserTab()
 
 }
 
-
-
 const char* options[] =
 {
 	"User Data",
@@ -177,7 +170,63 @@ const char* options[] =
 	"Guilds"
 	/*To be added*/
 };
+
 int optionsPos = -1;
+void LoginWind() {
+	static std::string previousUserResponse;
+
+	ImGui::Text("Login!");
+
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(ImGui::GetColumnIndex(), 200);
+
+	//ImGui::SetWindowFocus();
+	static char tag[64];
+	ImGui::InputText("Tag", tag, IM_ARRAYSIZE(tag));
+
+	static char email[128];
+	ImGui::InputText("Email", email, IM_ARRAYSIZE(email));
+
+	static char phoneNumber[128];
+	ImGui::InputText("Phone Number", phoneNumber, IM_ARRAYSIZE(phoneNumber));
+
+	static char password[UINT16_MAX];
+	ImGui::InputText("Password", password, IM_ARRAYSIZE(password));
+
+	if (ImGui::Button("Submit", { 48,30 }))
+	{
+		auto userResponse = gBackend->CreateUser(tag, email, phoneNumber, password);
+
+		if (userResponse.first == CURLE_OK)
+		{
+			previousUserResponse = userResponse.second.toStyledString();
+		}
+		else
+		{
+			//display errror message containing what is required
+		}
+
+		//set our strings back to null
+		//////////////////////////////////////
+		RtlZeroMemory(tag, sizeof(tag));
+		RtlZeroMemory(email, sizeof(email));
+		RtlZeroMemory(phoneNumber, sizeof(phoneNumber));
+		RtlZeroMemory(password, sizeof(password));
+		//////////////////////////////////////
+	}
+}
+
+void Frontend::DrawProfileWindow() {
+	ImGui::SetNextWindowSize({ 845,560 });
+	ImGui::Begin("##Profile Window", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+	{
+		if (!globals->isLoggedIn) {
+
+		}
+
+	}
+}
+
 void Frontend::DrawInterface()
 {
 	ImGui::SetNextWindowSize({ 845,560 });
@@ -202,7 +251,7 @@ void Frontend::DrawInterface()
 		
 		if (burgerMenuPressed)
 		{
-			
+			ImGui::Begin("BurgerMen###2333", false, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
 			//ImGui::PushStyleColor(ImGuiCol_ChildBg, {0,0,0.5,0.2});
 			ImGui::SetCursorPosX(ImGui::GetWindowSize().x - 70);
 			ImGui::SetCursorPosY(40);
@@ -213,6 +262,7 @@ void Frontend::DrawInterface()
 				ImGui::ListBox("##BurgerOptions", &optionsPos, options, IM_ARRAYSIZE(options));
 
 			}ImGui::EndChild();
+			ImGui::End();
 		}
 		switch (optionsPos)
 		{

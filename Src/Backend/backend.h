@@ -44,10 +44,8 @@ public:
 	std::pair<CURLcode,Json::Value> CreateUser(
 		std::string tag,
 		std::string email,
-		std::string id,
 		std::string phoneNumber,
-		std::string passwordHash,
-		std::string token
+		std::string password
 	);
 	/// <summary>
 	/// Lists all existing Members

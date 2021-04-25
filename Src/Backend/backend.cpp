@@ -68,7 +68,9 @@ bool Backend::RenderLoop()
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
+
 		Frontend::DrawInterface();
+
 		ImGui::Render();
 		pd3dDeviceContext->OMSetRenderTargets(1, &mainRenderTargetView, NULL);
 		pd3dDeviceContext->ClearRenderTargetView(mainRenderTargetView, (float*)&clearColour);
@@ -193,10 +195,8 @@ std::size_t Callback(
 std::pair<CURLcode,Json::Value> Backend::CreateUser(
 	std::string tag,
 	std::string email,
-	std::string id,
 	std::string phoneNumber,
-	std::string passwordHash,
-	std::string token
+	std::string password
 )
 {
 	CURL* curl;
@@ -210,16 +210,14 @@ std::pair<CURLcode,Json::Value> Backend::CreateUser(
 		std::string fields;
 		fields += "tag=" + tag + "&";
 		fields += "email=" + email + "&";
-		fields += "id=" + id + "&";
 		fields += "phoneNumber=" + phoneNumber + "&";
-		fields += "hash=" + passwordHash + "&";
-		fields += "token=" + token;
+		fields += "password=" + password + "&";
 		std::cout << fields <<std::endl;
 		/* First set the URL that is about to receive our POST. This URL can
 		   just as well be a https:// URL if that is what should receive the
 		   data. 
 		*/
-		curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:322/api/member");
+		curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:322/api/member/register");
 		/* Now specify the POST data */
 		curl_easy_setopt(curl,
 			CURLOPT_POSTFIELDS, 

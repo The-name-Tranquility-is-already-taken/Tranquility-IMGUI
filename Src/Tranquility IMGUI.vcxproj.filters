@@ -144,5 +144,8 @@
     <ClInclude Include="IMGUI-Dependencies\imgui_impl_win32.h">
       <Filter>ImGui\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="globals.h">
+      <Filter>Backend\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
